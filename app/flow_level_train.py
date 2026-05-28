@@ -5,6 +5,7 @@ import os
 import random
 
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 from sb3_contrib import MaskablePPO
 from stable_baselines3.common.callbacks import EvalCallback
@@ -48,11 +49,22 @@ def build_policy_kwargs() -> dict:
     )
 
 
-def make_env(num_flows, rank: int, topo: str, list_jitters,
-             training: bool = True, link_rate: int = 100):
-    def _init():
-        graph = generate_graph(topo, link_rate)
+def infer_max_hops(graph) -> int:
+    es_nodes = [node for node, data in graph.nodes(data=True) if data["node_type"] == "ES"]
+    max_hops = 0
+    for src in es_nodes:
+        for dst in es_nodes:
+            if src == dst or not nx.has_path(graph, src, dst):
+                continue
+            max_hops = max(max_hops, nx.shortest_path_length(graph, src, dst))
+    if max_hops == 0:
+        raise ValueError("Cannot infer max_hops from graph; no ES-to-ES path found.")
+    return max_hops
 
+
+def make_env(num_flows, rank: int, graph, list_jitters, max_hops: int,
+             training: bool = True, monitor_dir: str = None):
+    def _init():
         list_flow_generators = []
         for jitters in list_jitters:
             flow_generator = FlowGenerator(graph, jitters=list(jitters))
@@ -60,10 +72,11 @@ def make_env(num_flows, rank: int, topo: str, list_jitters,
 
         flows = random.choice(list_flow_generators)(num_flows)
         network = Network(graph, flows)
-        max_hops = max(len(flow.path) for flow in flows)
         env = FlowLevelNetEnv(clone_network(network), max_hops=max_hops)
 
-        env = Monitor(env, os.path.join(MONITOR_DIR, f'{"train" if training else "eval"}_{rank}'))
+        active_monitor_dir = MONITOR_DIR if monitor_dir is None else monitor_dir
+        if active_monitor_dir is not None:
+            env = Monitor(env, os.path.join(active_monitor_dir, f'{"train" if training else "eval"}_{rank}'))
         return env
 
     return _init
@@ -75,8 +88,10 @@ def train(topo: str, num_time_steps, jitters, num_flows=NUM_FLOWS,
     os.makedirs(OUT_DIR, exist_ok=True)
 
     n_envs = NUM_ENVS
+    graph = generate_graph(topo, link_rate)
+    max_hops = infer_max_hops(graph)
     env = SubprocVecEnv([
-        make_env(num_flows, i, topo, jitters, link_rate=link_rate)
+        make_env(num_flows, i, graph, jitters, max_hops)
         for i in range(n_envs)
     ])
 
@@ -91,7 +106,7 @@ def train(topo: str, num_time_steps, jitters, num_flows=NUM_FLOWS,
         )
 
     eval_env = SubprocVecEnv([
-        make_env(num_flows, i, topo, jitters, training=False, link_rate=link_rate)
+        make_env(num_flows, i, graph, jitters, max_hops, training=False)
         for i in range(n_envs)
     ])
     callback = EvalCallback(
