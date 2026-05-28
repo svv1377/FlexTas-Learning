@@ -9,9 +9,9 @@ from sb3_contrib import MaskablePPO
 from stable_baselines3 import A2C, DQN, PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from src.agent.flowLevelEncoder import FlowLevelFeaturesExtractor
+from src.agent.flow_level_encoder import FlowLevelFeaturesExtractor
 from src.app.scheduler import BaseScheduler, ScheduleRes
-from src.env.flowLevelEnv import FlowLevelNetEnv
+from src.env.flow_level_env import FlowLevelNetEnv
 from src.lib.timing_decorator import timing_decorator
 from src.network.net import Network
 

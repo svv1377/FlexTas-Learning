@@ -13,9 +13,9 @@ from stable_baselines3.common.results_plotter import load_results, ts2xy
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from definitions import OUT_DIR
-from src.agent.flowLevelEncoder import FlowLevelFeaturesExtractor
-from src.app.flowLevelDrlScheduler import clone_network
-from src.env.flowLevelEnv import FlowLevelNetEnv
+from src.agent.flow_level_encoder import FlowLevelFeaturesExtractor
+from src.app.flow_level_drl_scheduler import clone_network
+from src.env.flow_level_env import FlowLevelNetEnv
 from src.lib.log_config import log_config
 from src.lib.timing_decorator import timing_decorator
 from src.network.net import FlowGenerator, Network, generate_graph
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     NUM_ENVS = args.num_envs
     list_jitters = parse_jitters(args.jitters)
 
-    log_config(os.path.join(OUT_DIR, "flowLevelTrain.log"), logging.DEBUG)
+    log_config(os.path.join(OUT_DIR, "flow_level_train.log"), logging.DEBUG)
     logging.info(args)
 
     MONITOR_DIR = _prepare_monitor_dir()

@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from stable_baselines3.common.env_checker import check_env
 
-from src.env.flowLevelEnv import (
+from src.env.flow_level_env import (
     FlowLevelNetEnv,
     decode_gating_action,
     encode_gating_pattern,

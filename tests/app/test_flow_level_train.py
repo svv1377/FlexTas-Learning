@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-from app.flowLevelTrain import build_policy_kwargs, parse_jitters
-from src.agent.flowLevelEncoder import FlowLevelFeaturesExtractor
+from app.flow_level_train import build_policy_kwargs, parse_jitters
+from src.agent.flow_level_encoder import FlowLevelFeaturesExtractor
 
 
 class TestFlowLevelTrain(unittest.TestCase):

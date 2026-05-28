@@ -37,7 +37,7 @@ class FlowLevelNetEnv(NetEnv):
     One environment step schedules the current flow end-to-end. The action is a
     bitmask over hops: bit i decides whether hop i enables gating. Per-hop timing
     scheduling is delegated to NetEnv.step(), so timing rules stay aligned with
-    the hop-level baseline.
+    the existing project environment.
     """
 
     def __init__(self, network: Network = None, max_hops: int = None):

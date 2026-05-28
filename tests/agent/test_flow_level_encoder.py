@@ -2,8 +2,8 @@ import unittest
 
 import torch
 
-from src.agent.flowLevelEncoder import FlowLevelFeaturesExtractor
-from src.env.flowLevelEnv import FlowLevelNetEnv
+from src.agent.flow_level_encoder import FlowLevelFeaturesExtractor
+from src.env.flow_level_env import FlowLevelNetEnv
 from src.network.net import Flow, Network, generate_linear_5
 
 

@@ -2,8 +2,8 @@ import unittest
 
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from src.app.flowLevelDrlScheduler import FlowLevelDrlScheduler
-from src.env.flowLevelEnv import FlowLevelNetEnv
+from src.app.flow_level_drl_scheduler import FlowLevelDrlScheduler
+from src.env.flow_level_env import FlowLevelNetEnv
 from src.network.net import Flow, Network, generate_linear_5
 
 
@@ -16,7 +16,7 @@ class TestFlowLevelDrlScheduler(unittest.TestCase):
         ]
         self.network = Network(graph, flows)
 
-    def test_initializes_flowLevelEnv(self):
+    def test_initializes_flow_level_env(self):
         scheduler = FlowLevelDrlScheduler(
             self.network,
             num_envs=1,
